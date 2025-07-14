@@ -6,19 +6,22 @@ module Test.Check.Core
     Result(..),
     State(..),
     TestName(..),
-    VeriGroup(..),
-    VeriTest(..),
-    VeriTree(..),
+    Branch(..),
+    Test(..),
+    Group(..),
     
+    IsGroup(..),
     IsTest(..),
 
     mkPlan,
     enumerate,
-    runTree,
+    runGroup,
     runTests,
     runPlan,
     checkResults,
     reportResults,
+    groupBranchNamed,
+    namedGroupOf,
   ) where
 
 import Control.Concurrent (getNumCapabilities)
@@ -29,12 +32,12 @@ import System.Exit (ExitCode(..))
 import UnliftIO.Async (pooledReplicateConcurrently_)
 import Test.Check.Core.Types
 
-enumerate :: VeriTree -> [VeriTest]
+enumerate :: Group -> [Test]
 enumerate = \case
-  VeriTreeTest test -> [test]
-  VeriTreeGroup group -> mconcat $ map enumerate group.children
+  GroupOfTest test -> [test]
+  GroupOfBranch group -> mconcat $ map enumerate group.children
 
-dequeueTest :: Plan -> IO (Maybe VeriTest)
+dequeueTest :: Plan -> IO (Maybe Test)
 dequeueTest plan = STM.atomically $ do
     tests <- STM.readTVar plan.tQueue
     state <- STM.readTVar plan.tState
@@ -51,7 +54,7 @@ dequeueTest plan = STM.atomically $ do
           Nothing ->
             error $ "Test " ++ show t.name ++ " not found in state"
 
-completeTest :: Plan -> VeriTest -> Result -> IO ()
+completeTest :: Plan -> Test -> Result -> IO ()
 completeTest plan test result = do
   STM.atomically $ do
     oldState <- STM.readTVar plan.tState
@@ -73,13 +76,13 @@ runWorker plan = do
     completeTest plan test result
     runWorker plan
 
-runTree :: VeriTree -> IO ()
-runTree tree = do
+runGroup :: Group -> IO ()
+runGroup tree = do
   plan <- mkPlan $ enumerate tree
 
   runPlan plan
 
-runTests :: [VeriTest] -> IO ()
+runTests :: [Test] -> IO ()
 runTests tests = do
   plan <- mkPlan tests
 

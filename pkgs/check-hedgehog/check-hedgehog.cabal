@@ -32,9 +32,12 @@ common project-config
 library
   import:               project-config
   exposed-modules:      Test.Check.Hedgehog
-
+                        Test.Check.Hedgehog.Core
+                        Test.Check.Hedgehog.Orphans
   build-depends:        base                  >= 4.9      && < 5,
-                        hedgehog,
+                        hedgehog              >= 1.0      && < 2,
+                        mmorph                >= 1.2      && < 2,
+                        resourcet             >= 1.2      && < 1.4,
   
   build-depends:        check-core,
 

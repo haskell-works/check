@@ -1,0 +1,122 @@
+cabal-version: 2.2
+
+name:                   check-discover
+version:                5.0.2
+synopsis:               Test discovery for the check framework.
+description:            Automatic test discovery and runner for the check framework.
+                      
+                        Prefix your test case names and check-discover will discover, collect and run them.
+                      
+                        All popular test libraries are covered. Configure once and then just write your tests.
+                        Avoid forgetting to add test modules to your Cabal/Hpack files.
+                      
+                        Check ingredients are included along with various configuration options for different
+                        use cases.
+                      
+                        Please see the `README.md` below for how to get started.
+category:               Testing
+stability:              Experimental
+homepage:               https://github.com/haskell-works/check
+bug-reports:            https://github.com/haskell-works/check/issues
+author:                 Luke Murphy
+maintainer:             John Ky <newhoggy@gmail.com>
+copyright:              2016 Luke Murphy
+                        2025 John Ky
+license:                MIT
+license-file:           LICENSE
+tested-with:            GHC == 9.2.2, GHC == 9.0.2, GHC == 8.8.4, GHC == 8.6.5
+build-type:             Simple
+extra-source-files:     CHANGELOG.md
+                        README.md
+
+source-repository head
+  type: git
+  location: https://github.com/haskell-works/check-discover
+
+flag dev
+  description: Enable development mode
+  manual: True
+  default: False
+
+common base                       { build-depends: base                       >= 4.11       && < 5      }
+
+common bytestring                 { build-depends: bytestring                 >= 0.9      && < 1.0      }
+common containers                 { build-depends: containers                 >= 0.4      && < 1.0      }
+common directory                  { build-depends: directory                  >= 1.1      && < 2.0      }
+common filepath                   { build-depends: filepath                   >= 1.3      && < 2.0      }
+common Glob                       { build-depends: Glob                       >= 0.8      && < 1.0      }
+common hedgehog                   { build-depends: hedgehog                   >= 1.0      && < 2.0      }
+common check-core                 { build-depends: check-core                 >= 0        && < 1        }
+common check-hedgehog             { build-depends: check-hedgehog             >= 0        && < 1        }
+
+common check-discover
+  build-depends: check-discover
+
+common project-config
+  default-language:     GHC2024
+  default-extensions:   BlockArguments
+                        DeriveGeneric
+                        DerivingStrategies
+                        DuplicateRecordFields
+                        FlexibleInstances
+                        GADTs
+                        ImportQualifiedPost
+                        LambdaCase
+                        NoFieldSelectors
+                        OverloadedRecordDot
+                        TypeApplications
+  ghc-options:          -Wall
+                        -Widentities
+                        -Wincomplete-uni-patterns
+                        -Wmissing-deriving-strategies
+                        -Wredundant-constraints
+                        -Wunused-packages
+
+library
+  import:               base, project-config,
+                        Glob,
+                        containers,
+                        filepath,
+  exposed-modules:      Test.Check.Discover
+                        Test.Check.Discover.Internal.Config
+                        Test.Check.Discover.Internal.Driver
+                        Test.Check.Discover.Internal.Generator
+                        Test.Check.Discover.TastyInfo
+                        Test.Check.Discover.Version
+  other-modules:        Paths_check_discover
+  autogen-modules:      Paths_check_discover
+  hs-source-dirs:       src
+  ghc-options:          -Wall
+  default-language:     Haskell2010
+
+executable check-discover
+  import:               base, project-config,
+                        filepath,
+  main-is:              app/Main.hs
+  autogen-modules:      Paths_check_discover
+  other-modules:        Paths_check_discover
+  ghc-options:          -Wall
+  build-depends:        check-discover
+  default-language:     Haskell2010
+
+test-suite check-discover-test
+  import:               base, project-config,
+                        -- bytestring,
+                        -- containers,
+                        check-core,
+                        check-hedgehog,
+                        hedgehog,
+  type:                 exitcode-stdio-1.0
+  main-is:              Driver.hs
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N
+  other-modules:        ConfigTest
+                        DiscoverTest
+                        SubMod.FooBaz
+                        SubMod.PropTest
+                        SubMod.SubSubMod.PropTest
+                        Paths_check_discover
+  autogen-modules:      Paths_check_discover
+  hs-source-dirs:       test
+  ghc-options:          -Wall
+  default-language:     Haskell2010
+  build-tool-depends:   check-discover:check-discover

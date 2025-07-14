@@ -1,3 +1,4 @@
 packages:
   pkgs/check-core
+  pkgs/check-discover
   pkgs/check-hedgehog

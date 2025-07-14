@@ -5,14 +5,17 @@ module Test.Check.Core.Types
     Result(..),
     State(..),
     TestName(..),
-    VeriGroup(..),
-    VeriTest(..),
-    VeriTree(..),
+    Branch(..),
+    Test(..),
+    Group(..),
     
+    IsGroup(..),
     IsTest(..),
 
     mkPlan,
     stateIsSuccessful,
+    groupBranchNamed,
+    namedGroupOf,
   ) where
 
 import Control.Concurrent.STM (TVar)
@@ -20,6 +23,9 @@ import Control.Concurrent.STM qualified as STM
 import Data.Map (Map)
 import Data.Map qualified as Map
 import HaskellWorks.Prelude
+
+class IsGroup t where
+  toGroup :: t -> Group
 
 class IsTest t where
   runTest :: t -> IO Result
@@ -48,25 +54,25 @@ newtype Result = Result
   }
   deriving (Show, Eq)
 
-data VeriTree
-  = VeriTreeTest VeriTest
-  | VeriTreeGroup VeriGroup
+data Group
+  = GroupOfTest Test
+  | GroupOfBranch Branch
 
-data VeriGroup = VeriGroup
+data Branch = Branch
   { name :: String
-  , description :: String
-  , children :: [VeriTree]
+  -- , description :: String
+  , children :: [Group]
   }
 
-data VeriTest = forall t . IsTest t => VeriTest
+data Test = forall t . IsTest t => Test
   { name :: TestName
   , description :: String
   , test :: t
   }
 
-instance IsTest VeriTest where
+instance IsTest Test where
   runTest = \case
-    VeriTest _ _ test ->
+    Test _ _ test ->
       runTest test
 
 newtype TestName = TestName
@@ -75,8 +81,8 @@ newtype TestName = TestName
   deriving (Show, Eq, Ord)
 
 data Plan = Plan
-  { tests :: Map TestName VeriTest
-  , tQueue :: TVar [VeriTest]
+  { tests :: Map TestName Test
+  , tQueue :: TVar [Test]
   , tState :: TVar (Map TestName State)
   }
 
@@ -86,7 +92,7 @@ data State
   | Completed Result
   deriving (Show, Eq)
 
-mkPlan :: [VeriTest] -> IO Plan
+mkPlan :: [Test] -> IO Plan
 mkPlan tests = do
   let initialState = Map.fromList [(test.name, Queued) | test <- tests]
   tQueue <- STM.newTVarIO tests
@@ -101,3 +107,11 @@ stateIsSuccessful :: State -> Bool
 stateIsSuccessful = \case
   Completed (Result Success) -> True
   _ -> False
+
+groupBranchNamed :: String -> [Group] -> Group
+groupBranchNamed name children =
+  GroupOfBranch $ Branch name children
+
+namedGroupOf :: IsGroup t => String -> t -> IO Group
+namedGroupOf name t =
+  pure $ groupBranchNamed name [toGroup t]
