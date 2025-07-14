@@ -1,0 +1,50 @@
+cabal-version:          3.8
+name:                   veritas
+version:                0.0.0.1
+synopsis:               Veritas
+description:            Veritas.
+copyright:              2025 Veritas.
+author:                 John Ky
+maintainer:             newhoggy@gmail.com
+category:               Test
+license:                BSD-3-Clause
+license-files:          LICENSE
+                        NOTICE
+build-type:             Simple
+extra-source-files:     README.md
+
+common project-config
+  default-language:     GHC2024
+  default-extensions:   BlockArguments
+                        DuplicateRecordFields
+                        FlexibleInstances
+                        GADTs
+                        ImportQualifiedPost
+                        LambdaCase
+                        NoFieldSelectors
+                        OverloadedRecordDot
+                        TypeApplications
+
+  build-depends:        base >=4.14 && <4.22
+  ghc-options:          -Wall
+  ghc-options:          -Wunused-packages
+
+library
+  import:               project-config
+  exposed-modules:      Veritas
+                        Veritas.Types
+
+  build-depends:        base                  >= 4.9      && < 5,
+                        containers            >= 0.5      && < 1,
+                        hw-prelude            >= 0.0      && < 0.1,
+                        stm                   >= 2.3      && < 2.6,
+                        unliftio              >= 0.2      && < 0.3,
+
+  hs-source-dirs:       src
+  default-language:     Haskell2010
+  default-extensions:   CPP,
+                        DeriveDataTypeable,
+                        ScopedTypeVariables,
+  ghc-options:          -Wall
+                        -Wno-incomplete-uni-patterns
+                        -Wcompat
