@@ -1,5 +1,5 @@
 {-# LANGUAGE LambdaCase #-}
-module Veritas
+module Test.Check.Core
   ( FailureReason(..),
     Outcome(..),
     Plan(..),
@@ -27,7 +27,7 @@ import Control.Monad ( forM_ )
 import Data.Map qualified as Map
 import System.Exit (ExitCode(..))
 import UnliftIO.Async (pooledReplicateConcurrently_)
-import Veritas.Types
+import Test.Check.Core.Types
 
 enumerate :: VeriTree -> [VeriTest]
 enumerate = \case

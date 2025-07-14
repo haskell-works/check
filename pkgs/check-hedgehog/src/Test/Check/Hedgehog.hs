@@ -1,10 +1,10 @@
-module Veritas.Hedgehog
+module Test.Check.Hedgehog
   ( propertyNamed
   ) where
 
 import Hedgehog (Property)
 import Hedgehog qualified as H
-import Veritas.Types
+import Test.Check.Core.Types
 
 propertyNamed :: Property -> VeriTest
 propertyNamed p =

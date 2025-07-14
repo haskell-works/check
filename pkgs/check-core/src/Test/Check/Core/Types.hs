@@ -1,4 +1,4 @@
-module Veritas.Types
+module Test.Check.Core.Types
   ( FailureReason(..),
     Outcome(..),
     Plan(..),

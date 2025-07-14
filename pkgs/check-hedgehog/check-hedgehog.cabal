@@ -1,9 +1,9 @@
 cabal-version:          3.8
-name:                   veritas-hedgehog
+name:                   check-hedgehog
 version:                0.0.0.1
-synopsis:               Veritas
-description:            Veritas.
-copyright:              2025 Veritas.
+synopsis:               Check
+description:            Check.
+copyright:              2025 Check.
 author:                 John Ky
 maintainer:             newhoggy@gmail.com
 category:               Test
@@ -31,12 +31,12 @@ common project-config
 
 library
   import:               project-config
-  exposed-modules:      Veritas.Hedgehog
+  exposed-modules:      Test.Check.Hedgehog
 
   build-depends:        base                  >= 4.9      && < 5,
                         hedgehog,
   
-  build-depends:        veritas,
+  build-depends:        check-core,
 
   hs-source-dirs:       src
   default-language:     Haskell2010

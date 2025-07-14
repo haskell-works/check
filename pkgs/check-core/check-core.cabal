@@ -1,9 +1,9 @@
 cabal-version:          3.8
-name:                   veritas
+name:                   check-core
 version:                0.0.0.1
-synopsis:               Veritas
-description:            Veritas.
-copyright:              2025 Veritas.
+synopsis:               Check
+description:            Check.
+copyright:              2025 Check.
 author:                 John Ky
 maintainer:             newhoggy@gmail.com
 category:               Test
@@ -31,8 +31,8 @@ common project-config
 
 library
   import:               project-config
-  exposed-modules:      Veritas
-                        Veritas.Types
+  exposed-modules:      Test.Check.Core
+                        Test.Check.Core.Types
 
   build-depends:        base                  >= 4.9      && < 5,
                         containers            >= 0.5      && < 1,
