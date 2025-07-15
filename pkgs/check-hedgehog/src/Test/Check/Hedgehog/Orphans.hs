@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -Wno-orphans #-}
+
 module Test.Check.Hedgehog.Orphans
   (
   ) where
@@ -7,4 +9,4 @@ import Test.Check.Core
 import Test.Check.Hedgehog.Core
 
 instance IsGroup Property where
-  toGroup p = GroupOfTest $ propertyNamed p
+  toGroup = testPropertyNamed

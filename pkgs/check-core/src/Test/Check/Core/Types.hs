@@ -25,7 +25,7 @@ import Data.Map qualified as Map
 import HaskellWorks.Prelude
 
 class IsGroup t where
-  toGroup :: t -> Group
+  toGroup :: String -> String -> t -> Group
 
 class IsTest t where
   runTest :: t -> IO Result
@@ -112,6 +112,6 @@ groupBranchNamed :: String -> [Group] -> Group
 groupBranchNamed name children =
   GroupOfBranch $ Branch name children
 
-namedGroupOf :: IsGroup t => String -> t -> IO Group
+namedGroupOf :: IsGroup t =>  String -> t -> IO Group
 namedGroupOf name t =
-  pure $ groupBranchNamed name [toGroup t]
+  pure $ toGroup name name t

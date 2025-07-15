@@ -23,8 +23,8 @@ import qualified Hedgehog.Range      as R
 
 ------------------------------------------------------------------------------------------------
 
-test_addition :: Property
-test_addition = property $ do
+hprop_addition :: Property
+hprop_addition = property $ do
   a <- forAll $ G.int R.linearBounded
   b <- forAll $ G.int R.linearBounded
   a + b === b + a

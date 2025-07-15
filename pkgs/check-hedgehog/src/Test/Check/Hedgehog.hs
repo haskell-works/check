@@ -1,5 +1,5 @@
 module Test.Check.Hedgehog
-  ( propertyNamed,
+  ( testPropertyNamed,
     propertyOnce,
   ) where
 
